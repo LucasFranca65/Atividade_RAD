@@ -4,10 +4,23 @@ import tkinter .messagebox as msg
 
 root = Tk()
 
+
+# Classe das Funções
+class Functions():
+    # Funcção Botão Limpar
+    def limpar(self):
+        self.en_name.delete(0, END)
+        self.en_matricula.delete(0, END)
+        self.en_email.delete(0, END)
+        self.en_phone.delete(0, END)
+        self.en_montadora.delete(0, END)
+        self.en_modelo.delete(0, END)
+        self.en_ano.delete(0, END)
+        self.en_placa.delete(0, END)
+
+
 # Classe daAplicação
-
-
-class Aplication():
+class Aplication(Functions):
     def __init__(self):
         self.root = root
         self.tela()
@@ -98,18 +111,10 @@ class Aplication():
 
 # Botões do Frame_1,  formulario
     def buttons_form_frame_1(self):
-        # Função Botõoes
 
-        def salvar() -> NONE:
-            msg.showinfo("Novo Cadastro",
-                         "Cadastro Realizado com sucesso com sucesso")
-
-        def excluir() -> NONE:
-            msg.showinfo("Excluir Cadastro",
-                         "Cadastro Ecluido com sucesso com sucesso")
         # Botão limpar
         self.bt_limpar = Button(
-            self.frame1, text="Limpar", font=('verdana', 8, 'bold'))
+            self.frame1, text="Limpar", font=('verdana', 8, 'bold'), command=self.limpar)
         self.bt_limpar.place(relx=0.14, rely=0.1, relwidth=0.1, relheight=0.1)
         # Botão Buscar
         self.bt_buscar = Button(
@@ -117,7 +122,7 @@ class Aplication():
         self.bt_buscar.place(relx=0.25, rely=0.1, relwidth=0.1, relheight=0.1)
         # Botão Novo
         self.bt_novo = Button(self.frame1, text="Novo",
-                              command=salvar, font=('verdana', 8, 'bold'))
+                              font=('verdana', 8, 'bold'))
         self.bt_novo.place(relx=0.66, rely=0.1, relwidth=0.1, relheight=0.1)
         # Botão Editar
         self.bt_edit = Button(self.frame1, text="Editar",
@@ -125,7 +130,7 @@ class Aplication():
         self.bt_edit.place(relx=0.77, rely=0.1, relwidth=0.1, relheight=0.1)
         # Botão Apagar
         self.bt_delet = Button(self.frame1, text="Excluir",
-                               command=excluir, font=('verdana', 8, 'bold'))
+                               font=('verdana', 8, 'bold'))
         self.bt_delet.place(relx=0.88, rely=0.1, relwidth=0.1, relheight=0.1)
 
 # Lista cadastrados frame 2
@@ -147,7 +152,7 @@ class Aplication():
         self.listaCli.column('#5', width=50)
         # Posicionando a tabela
         self.listaCli.place(relx=0.02, rely=0.1, relwidth=0.94, relheight=0.85)
-
+        # Configuração da ScrollBar
         self.scrollList = Scrollbar(self.frame2, orient="vertical")
         self.listaCli.configure(yscrollcommand=self.scrollList.set)
         self.scrollList.place(relx=0.96, rely=0.1,
