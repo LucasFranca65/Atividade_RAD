@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 import tkinter .messagebox as msg
+import sqlite3
 
 root = Tk()
 
@@ -18,8 +19,40 @@ class Functions():
         self.en_ano.delete(0, END)
         self.en_placa.delete(0, END)
 
+    # Funções banco de dados
+    def connectDB(self):
+        self.conn = sqlite3.connect("CadOficina.db")
+        self.cursor = self.conn.cursor()
+
+    def desconnectDB(self):
+        self.conn.close()
+
+    def mountTables(self):
+        self.connectDB()
+        print("Conectado ao banco de dados comsucesso")
+        # Criar Tabelas
+        self.cursor.executescript("""
+            CREATE TABLE IF NOT EXISTS clientes(
+                matricula INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                nome CHAR(40) NOT NULL,
+                email CHRAR(40),
+                telefone INTEGER(13) NOT NULL                
+            );
+            CREATE TABLE IF NOT EXISTS veiculos(
+                id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 
+                montadora CHAR(10),
+                modelo CHAR(40) NOT NULL,
+                ano INTEGER(4),
+                placa CHAR(7) NOT NULL                
+            );                
+        """)
+        self.conn.commit()
+        print('Banco de Dados criado')
+        self.desconnectDB()
 
 # Classe daAplicação
+
+
 class Aplication(Functions):
     def __init__(self):
         self.root = root
@@ -28,6 +61,7 @@ class Aplication(Functions):
         self.form_frame1()
         self.buttons_form_frame_1()
         self.lista_frame2()
+        self.mountTables()
         root.mainloop()
 
 # Função da tela principal
