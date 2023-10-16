@@ -48,6 +48,7 @@ class Functions():
         self.desconnectDB()
 
     def capturaVariaveis(self):
+        self.matricula = self.en_matricula.get()
         self.nome = self.en_name.get()
         self.email = self.en_email.get()
         self.phone = self.en_phone.get()
@@ -78,12 +79,12 @@ class Functions():
 
         self.desconnectDB()
 
-    def onDoubleClick(self):
+    def onDoubleClick(self, event):
         self.limpar()
         self.listaCli.selection()
 
         for n in self.listaCli.selection():
-            col1, col2, col3, col4, col5, col6, col7, col8 = self.listaCLi.item(
+            col1, col2, col3, col4, col5, col6, col7, col8 = self.listaCli.item(
                 n, 'values')
             self.en_matricula.insert(END, col1)
             self.en_name.insert(END, col2)
@@ -94,8 +95,42 @@ class Functions():
             self.en_ano.insert(END, col7)
             self.en_placa.insert(END, col8)
 
+    def delete_client(self):
+        self.capturaVariaveis()
+        self.connectDB()
+        self.cursor.execute(
+            """ DELETE FROM clientes WHERE  matricula = ? """, (self.matricula,))
+        self.conn.commit()
+        self.desconnectDB()
+        self.limpar()
+        self.selec_list()
 
+    def altera_client(self):
+        self.capturaVariaveis()
+        self.connectDB()
+        self.cursor.execute(""" UPDATE clientes SET nome = ? , email = ?, telefone = ?, montadora = ?, modelo = ?, ano = ?, placa = ?  WHERE matricula = ?""",
+                            (self.nome, self.email, self.phone, self.montadora, self.modelo, self.ano, self.placa, self.matricula))
+        self.conn.commit()
+        self.desconnectDB()
+        self.selec_list()
+        self.limpar()
+
+    def busca_cliente(self):
+        self.connectDB()
+        self.listaCli.delete(*self.listaCli.get_children())  # Limpando a lista
+        self.en_name.insert(END, '%')
+        name = self.en_name.get()
+        self.cursor.execute(""" SELECT matricula, nome, email, telefone, montadora, modelo, ano, placa FROM clientes
+                            WHERE nome LIKE '%s' ORDER BY nome ASC
+                            """ % name)
+        buscaNameCli = self.cursor.fetchall()
+        for i in buscaNameCli:
+            self.listaCli.insert("", END, values=i)
+        self.limpar()
+        self.desconnectDB()
 # Classe daAplicação
+
+
 class Aplication(Functions):
     def __init__(self):
         self.root = root
@@ -196,7 +231,7 @@ class Aplication(Functions):
         self.bt_limpar.place(relx=0.14, rely=0.1, relwidth=0.1, relheight=0.1)
         # Botão Buscar
         self.bt_buscar = Button(
-            self.frame1, text="Buscar", font=('verdana', 8, 'bold'))
+            self.frame1, text="Buscar", font=('verdana', 8, 'bold'), command=self.busca_cliente)
         self.bt_buscar.place(relx=0.25, rely=0.1, relwidth=0.1, relheight=0.1)
         # Botão Novo
         self.bt_novo = Button(self.frame1, text="Novo",
@@ -204,17 +239,18 @@ class Aplication(Functions):
         self.bt_novo.place(relx=0.66, rely=0.1, relwidth=0.1, relheight=0.1)
         # Botão Editar
         self.bt_edit = Button(self.frame1, text="Editar",
-                              font=('verdana', 8, 'bold'))
+                              font=('verdana', 8, 'bold'), command=self.altera_client)
         self.bt_edit.place(relx=0.77, rely=0.1, relwidth=0.1, relheight=0.1)
         # Botão Apagar
         self.bt_delet = Button(self.frame1, text="Excluir",
-                               font=('verdana', 8, 'bold'))
+                               font=('verdana', 8, 'bold'), command=self.delete_client)
         self.bt_delet.place(relx=0.88, rely=0.1, relwidth=0.1, relheight=0.1)
 
 # Lista cadastrados frame 2
     def lista_frame2(self):
-        self.listaCli = ttk.Treeview(self.frame2, height=3, columns=(
+        self.listaCli = ttk.Treeview(self.frame2, height=3, column=(
             "col1", "col2", "col3", "col4", "col5", "col6", "col7", "col8"))
+
         self.listaCli.heading("#0", text="")
         self.listaCli.heading("#1", text="Matricula")
         self.listaCli.heading("#2", text="Nome")
@@ -223,7 +259,7 @@ class Aplication(Functions):
         self.listaCli.heading("#5", text="Montadora")
         self.listaCli.heading("#6", text="Modelo")
         self.listaCli.heading("#7", text="Ano")
-        self.listaCli.heading("#8", text="placa")
+        self.listaCli.heading("#8", text="Placa")
         # Definindo tamanho das colunas
         self.listaCli.column('#0', width=1)
         self.listaCli.column('#1', width=30)
@@ -241,6 +277,8 @@ class Aplication(Functions):
         self.listaCli.configure(yscrollcommand=self.scrollList.set)
         self.scrollList.place(relx=0.96, rely=0.1,
                               relwidth=0.02, relheight=0.85)
+
+        self.listaCli.bind("<Double-1>", self.onDoubleClick)
 
 
 Aplication()
