@@ -1,0 +1,20 @@
+from classes import Automoveis
+
+opala = Automoveis("GM", "Coupe", 140)
+
+print(opala.cor)
+print(opala.veloAtual)
+opala.acelerar(10)
+print(opala.veloAtual)
+opala.acelerar(10)
+print(opala.veloAtual)
+opala.acelerar(10)
+print(opala.veloAtual)
+opala.acelerar(100)
+print(opala.veloAtual)
+opala.frear(10)
+print(opala.veloAtual)
+opala.frear(10)
+print(opala.veloAtual)
+opala.frear(200)
+print(opala.veloAtual)
