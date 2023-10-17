@@ -224,6 +224,10 @@ class Aplication(Functions):
 
 # Botões do Frame_1,  formulario
     def buttons_form_frame_1(self):
+        # self.canvas_bt = Canvas(self.frame1, bd=0, bg='black', highlightbackground='gray',
+        # highlightthickness=3)
+        # self.canvas_bt.place(relx=0.13, rely=0.08,
+        # relwidth=0.3, relheight=0.19)
 
         # Botão limpar
         self.bt_limpar = Button(
